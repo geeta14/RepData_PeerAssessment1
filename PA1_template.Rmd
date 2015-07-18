@@ -13,26 +13,26 @@ output:
 ##unzip dataset
 unzip("activity.zip")
 ##read dataset
-data <- read.csv("activity.csv", colClasses = c("integer", "Date", "factor"))
+activity <- read.csv("activity.csv", colClasses = c("integer", "Date", "factor"))
 ##adding one more column named month corrosponding to each date
-data$month <- as.numeric(format(data$date, "%m"))
-##remove na from all data
-data1 <- na.omit(data)
+activity$month <- as.numeric(format(activity$date, "%m"))
+##3remove na from all data
+data <- na.omit(activity)
 ###setting index for each row
-rownames(data1) <- 1:nrow(data1)
+rownames(data) <- 1:nrow(data)
 ##review changes in data
-head(data1)
+head(data)
 ##see dimesion to confirm if column is added or not
-dim(data1)
+dim(data)
 ```
 
 ## What is mean and Median for total number of steps taken per day?
 ```{r}
 library(ggplot2)
 ##Histogram for total number of steps for each date
-ggplot(data1, aes(date, steps)) + geom_bar(stat = "identity", colour = "steelblue", fill = "steelblue", width = 0.7) + facet_grid(. ~ month, scales = "free") + labs(title = "Histogram of Total Number of Steps Taken Each Day", x = "Date", y = "Total number of steps")
+ggplot(data, aes(date, steps)) + geom_bar(stat = "identity", colour = "steelblue", fill = "steelblue", width = 0.7) + facet_grid(. ~ month, scales = "free") + labs(title = "Histogram of Total Number of Steps Taken Each Day", x = "Date", y = "Total number of steps")
 ###aggregate all data by date to get total steps for each date
-totalSteps <- aggregate(data1$steps, list(Date = data1$date), FUN = "sum")$x
+totalSteps <- aggregate(data$steps, list(Date = data$date), FUN = "sum")$x
 ##Finding mean of total steps for whole 2 months
 mean(totalSteps)
 #finding median of total steps for whole 2 months
@@ -42,7 +42,7 @@ median(totalSteps)
 
 ```{r}
 ###aggregate mean of total steps group by interval
-avgSteps <- aggregate(data1$steps, list(interval = as.numeric(as.character(data1$interval))), FUN = "mean")
+avgSteps <- aggregate(data$steps, list(interval = as.numeric(as.character(data$interval))), FUN = "mean")
 ##naming second column to as it is calculated averaged steps for each interval
 names(avgSteps)[2] <- "meanOfSteps"
 ###plotting time series to see avg steps for all interval
@@ -56,9 +56,9 @@ avgSteps[avgSteps$meanOfSteps == max(avgSteps$meanOfSteps), ]
 
 ```{r}
 ###checking how many missing values are available in dataset
-sum(is.na(data))
+sum(is.na(activity))
 ##creating new datset for imputing missing value 
-newData <- data
+newData <- activity
 ###assigning mean steps of interval to missing value of respective interval
 for (i in 1:nrow(newData)) {
 if (is.na(newData$steps[i])) {
